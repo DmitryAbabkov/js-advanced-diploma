@@ -1,4 +1,5 @@
 import Character from './Character';
+import Bowman from './characters/Bowman';
 
 export default class PositionedCharacter {
   constructor(character, position) {

@@ -1,5 +1,6 @@
 import { calcHealthLevel, calcTileType } from './utils';
 
+
 export default class GamePlay {
   constructor() {
     this.boardSize = 8;
@@ -73,7 +74,8 @@ export default class GamePlay {
       cell.innerHTML = '';
     }
 
-    for (const position of positions) {
+    for (const position of positions){
+      
       const cellEl = this.boardEl.children[position.position];
       const charEl = document.createElement('div');
       charEl.classList.add('character', position.character.type);
