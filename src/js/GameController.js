@@ -7,15 +7,7 @@ import Magician from './characters/Magician';
 import Swordsman from './characters/Swordsman';
 import Undead from './characters/Undead';
 import Vampire from './characters/Vampire';
-import {
-  generateTeam,
-  startFieldGenerator,
-  getAvailableDistance,
-  getAvailableAttack,
-} from './generators';
-import { returnStatement } from 'babel-types';
-
-
+import {randomElementFromArray} from './generators';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -27,54 +19,63 @@ export default class GameController {
   }
 
   init() {
-    function randomPositionToPlayer(number) {
-      const arrToPlayer = [];
-      const arrToEnemy = [];
-
-      for(let i = 0; i < number**2; i++) {
-        if (i % number == 0) {
-          arrToPlayer.push(i, ++i);
-        } else if (i % number == number-2) {
-          arrToEnemy.push(i, ++i);
-        }
-      }
-
-        function spawnIcon(arr) {
-            let randomIndex;  
-            randomIndex = Math.floor(Math.random() * arr.length);
-            let randomElement = arr[randomIndex];
-            // arr.splice(randomIndex, 1);
-            return randomElement;
-        }
-      return spawnIcon(arrToEnemy), spawnIcon(arrToPlayer);
-
-    }
-    
+    const borderCellsCount = 8;
+    const searchNumber = [];
 
     this.player.forEach((item)=> {
-     this.char.push(new PositionedCharacter(item, randomPositionToPlayer(8)));
+      const arrToPlayer = Array.from({ length: borderCellsCount * 2 }, (_, i) => {
+        return borderCellsCount * Math.floor(i / 2) + (i % 2);
+      });
+
+      let randomIndex = randomElementFromArray(arrToPlayer);
+
+      if (searchNumber.includes(randomIndex)) {
+        randomIndex = randomElementFromArray(arrToPlayer);
+        } 
+        searchNumber.push(randomIndex);
+        this.char.push(new PositionedCharacter(item, randomIndex));
     });
 
 
-        this.enemy.forEach((item)=> {
-      this.char.push(new PositionedCharacter(item, randomPositionToPlayer(8)))
+    this.enemy.forEach((item)=> {
+      const arrToEnemy = Array.from({ length: borderCellsCount * 2 }, (_, i) => {
+        return borderCellsCount * Math.ceil((i + 1) / 2) + (i % 2) - 2;
+      });
+      let randomIndex = randomElementFromArray(arrToEnemy)
+      if (searchNumber.includes(randomIndex)) {
+        randomIndex = randomElementFromArray(arrToEnemy);
+        } 
+      searchNumber.push(randomIndex);
+      this.char.push(new PositionedCharacter(item, randomIndex))
     });
 
 
     this.gamePlay.drawUi(themse.prairie);
     this.gamePlay.redrawPositions(this.char);
+    this.gamePlay.addCellClickListener(this.onCellClick.bind(this));
+    this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
+    this.gamePlay.addCellLeaveListener(this.onCellLeave.bind(this));
     }
+   
 
   onCellClick(index) {
-    // TODO: react to click
+
   }
 
   onCellEnter(index) {
-    // TODO: react to mouse enter
+    const message = `🎖1 ⚔10 🛡40 ❤50`;
+    this.char.forEach(item => {
+      if(item.position == index) {
+        this.gamePlay.showCellTooltip(message, index);
+        alert(message);
+        console.log('test')
+      }
+    })
   }
 
   onCellLeave(index) {
-    // TODO: react to mouse leave
+    this.gamePlay.hideCellTooltip(index);
   }
+  
 
-}
+}  

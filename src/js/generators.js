@@ -1,10 +1,3 @@
-// const Bowman = require('./characters/Bowman');
-// const Daemon = require('./characters/Daemon');
-// const Magician = require('./characters/Magician');
-// const Swordsman = require('./characters/Swordsman');
-// const Undead = require('./characters/Undead');
-// const Vampire = require('./characters/Vampire');
-// const Team = require('./Team.js');
 import Bowman from './characters/Bowman';
 import Daemon from './characters/Daemon';
 import Magican from './characters/Magician';
@@ -40,3 +33,9 @@ export function generateTeam(allowedTypes, maxLevel, characterCount) {
 }
 
 generateTeam([Bowman, Daemon, Swordsman, Undead, Vampire],3,4 );
+
+export function randomElementFromArray(arr) {
+  const randomIndex = Math.floor(Math.random() * arr.length);  
+
+  return arr[randomIndex];
+}
